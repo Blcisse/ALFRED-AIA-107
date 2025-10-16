@@ -1,0 +1,29 @@
+Languages / Tools / Frameworks
+------------------------------
+
+* Livekit 
+
+* Python 
+* Javascript
+* HTML
+* Tailwind CSS
+* Typescript
+
+* React JS
+* NPM 
+* Node JS
+* Next JS
+
+* Open AI 
+* Cartersia
+* Deepgream 
+
+
+* Firebase
+* Back4App
+
+
+* Netlify
+* AWS Cloud 
+
+

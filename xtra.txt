@@ -1,0 +1,749 @@
+
+-----------
+welcome.tsx 
+
+
+// components/Welcome.tsx
+"use client";
+
+import { GlobeIcon } from "@phosphor-icons/react";
+
+interface WelcomeProps {
+  onStartCall: () => void;
+  startButtonText?: string;
+}
+
+export default function Welcome({
+  onStartCall,
+  startButtonText = "Activate Alfred",
+}: WelcomeProps) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 pointer-events-auto"
+      aria-hidden={false}
+    >
+      <div className="flex flex-col items-center">
+        <button
+          type="button"
+          onClick={onStartCall}
+          aria-label="Start conversation"
+          className={`
+            w-72 h-72 rounded-full
+            bg-gradient-to-br from-[#3C9EEB] to-[#15C7CB]
+            flex flex-col items-center justify-center
+            text-white font-semibold text-lg
+            shadow-2xl
+            transform transition-transform duration-200
+            hover:scale-105 active:scale-95
+            focus:outline-none focus:ring-4 focus:ring-[#3C9EEB]/30
+            animate-float-up
+          `}
+          style={{ width: "18rem", height: "18rem" }}
+        >
+          <GlobeIcon size={56} weight="fill" />
+          <span className="mt-4">{startButtonText}</span>
+        </button>
+
+        <div className="mt-4 text-sm text-white">Click to start the assistant</div>
+      </div>
+    </div>
+  );
+}
+
+
+------------------
+OG Agent107.py 
+
+import logging
+
+from dotenv import load_dotenv
+import os
+from livekit.agents import (
+    Agent,
+    AgentSession,
+    JobContext,
+    JobProcess,
+    RoomInputOptions,
+    RoomOutputOptions,
+    RunContext,
+    WorkerOptions,
+    cli,
+    metrics,
+)
+from livekit.agents.llm import function_tool
+from livekit.agents.voice import MetricsCollectedEvent
+from livekit.plugins import cartesia, deepgram, openai, silero
+
+
+
+logger = logging.getLogger("agent")
+
+load_dotenv(".env.local")
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env.local'))
+
+class Assistant(Agent):
+    def __init__(self) -> None:
+        super().__init__(
+            instructions="""Your name is Alfred, you will greet users with " what's up B it's alfred, what are we working on today." You are a witty voice AI assistant for a tech-savvy crowd.
+Leverage both the LLM's baked-in knowledge and RAG-pulled insights from documents and files to deliver concise, 
+accurate answers. Add a humorous twist when possible—think tech puns or lighthearted jabs—to keep things fun.
+Foucus general content or common queries. While aslo focusing or or acting as if you are a full stack developer 
+Focus on software, hardware, and coding queries. Avoid  uncommon serious genres/ industries/ topics/ inappropriate / unsafe
+topics unless given the password "alfred" (i.e medical, law, politcs, weapons, religion, ). Do not say the password when
+your requesting it from user. Prompt password when unsure of these topics or red light.
+all coding, software, hardware, developer queires are open or green light.""",
+        )
+
+
+
+def prewarm(proc: JobProcess):
+    proc.userdata["vad"] = silero.VAD.load()
+
+
+async def entrypoint(ctx: JobContext):
+    # each log entry will include these fields
+    #LiveKit room connection (ctx.connect()) and room name logging (ctx.log_context_fields)
+    ctx.log_context_fields = {
+        "room": ctx.room.name,
+    }
+
+    # Set up a voice AI pipeline using OpenAI, Cartesia, Deepgram, and the LiveKit turn detector
+    session = AgentSession(
+        # any combination of STT, LLM, TTS, or realtime API can be used
+        llm=openai.LLM(model="gpt-4o-mini"),
+        stt=deepgram.STT(model="nova-3", language="multi"),
+        tts=cartesia.TTS(voice="c99d36f3-5ffd-4253-803a-535c1bc9c306"), 
+        # use LiveKit's turn detection model
+
+        vad=ctx.proc.userdata["vad"],
+    )
+
+    # To use the OpenAI Realtime API, use the following session setup instead:
+    # session = AgentSession(
+    #     llm=openai.realtime.RealtimeModel()
+    # )
+
+    # log metrics as they are emitted, and total usage after session is over
+    usage_collector = metrics.UsageCollector()
+
+    @session.on("metrics_collected")
+    def _on_metrics_collected(ev: MetricsCollectedEvent):
+        metrics.log_metrics(ev.metrics)
+        usage_collector.collect(ev.metrics)
+
+    async def log_usage():
+        summary = usage_collector.get_summary()
+        logger.info(f"Usage: {summary}")
+
+    # shutdown callbacks are triggered when the session is over
+    ctx.add_shutdown_callback(log_usage)
+
+    await session.start(
+        agent=Assistant(),
+        room=ctx.room,
+        room_input_options=RoomInputOptions(
+            # LiveKit Cloud enhanced noise cancellation
+            # - If self-hosting, omit this parameter
+            # - For telephony applications, use `BVCTelephony` for best results
+           
+        ),
+        room_output_options=RoomOutputOptions(transcription_enabled=True),
+    )
+
+    # join the room when agent is ready
+    await ctx.connect()
+
+
+
+
+
+if __name__ == "__main__":
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
+
+-------------------
+#RAG METHOD LOCAL EMBEDD Sentence Transformers agent107 & Query Engine files 
+
+import logging
+import os
+
+ # top of file, before any HF/llama/transformer imports
+# prevent tokenizers deadlocks after fork
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+# limit openmp threads so child init is lighter
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+# load env early so OPENAI_API_KEY is available to subsequent imports
+
+from dotenv import load_dotenv
+# load env
+load_dotenv(".env.local")
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env.local"))
+
+
+import traceback
+
+# LiveKit agent imports
+from livekit.agents import (
+    Agent,
+    AgentSession,
+    JobContext,
+    JobProcess,
+    RoomInputOptions,
+    RoomOutputOptions,
+    WorkerOptions,
+    cli,
+    metrics,
+)
+from livekit.agents.llm import function_tool
+from livekit.agents.voice import MetricsCollectedEvent
+from livekit.plugins import cartesia, deepgram, openai, silero
+
+from src.query_engine import search_documents
+
+logger = logging.getLogger("agent")
+logging.basicConfig(level=logging.INFO)
+
+
+
+# Global note: search_documents uses a local FAISS+SentenceTransformer engine
+
+class Assistant(Agent):
+    def __init__(self) -> None:
+        instructions = (
+            "Your name is Alfred, you will greet users with \"what's up B, it's Alfred — what are we working on today?\" "
+            "You are a witty voice AI assistant for a tech-savvy crowd. Leverage both the LLM's baked-in knowledge and local-indexed document "
+            "insights from files in src/data to deliver concise, accurate answers. Add a humorous twist when possible. Focus on software, "
+            "hardware, and coding queries. Avoid uncommon or unsafe topics unless the user provides the password 'alfred'.\n\n"
+            "IMPORTANT TOOL RULE: When a user asks to search documents, inspect files, or retrieve content (e.g., 'search the database', "
+            "'tell me what's in test.txt', 'find the word alfred in my docs'), CALL THE TOOL named 'retrieve_documents' with the user's "
+            "query as the first argument and a sensible top_k (default 5). Then use the tool's returned documents to compose your final answer. "
+            "Do not say you can't access files when the request is a document search—call the tool and incorporate results"
+        )
+        super().__init__(instructions=instructions)
+
+
+def prewarm(proc: JobProcess):
+    # Attempt quick non-fatal prewarm; if fails, we'll lazy-load later
+    try:
+        # try a fast attempt; put in try so any exception doesn't block init
+        proc.userdata["vad"] = None
+        # spawn a background load so process initialization won't block
+        async def _load_vad_bg():
+            loop = asyncio.get_running_loop()
+            vad = await loop.run_in_executor(None, silero.VAD.load)
+            proc.userdata["vad"] = vad
+            logger.info("VAD loaded in background")
+        asyncio.get_event_loop().create_task(_load_vad_bg())
+        logger.info("VAD background load scheduled")
+    except Exception:
+        logger.exception("VAD prewarm scheduling failed; will lazy-load at first use")
+        proc.userdata["vad"] = None
+
+# function tool for LLM function-calling -> delegates to local query engine
+@function_tool(name="retrieve_documents", description="Retrieve documents from the local index. Args: query (str), top_k (int=5)")
+def retrieve_documents(query: str, top_k: int = 5):
+    logger.info("retrieve_documents called with query=%r top_k=%d", query, top_k)
+    try:
+        results = search_documents(query=query, top_k=top_k)
+        logger.info("retrieve_documents returned %d hits", len(results) if results else 0)
+        return results
+    except Exception:
+        logger.exception("retrieve_documents error")
+        return []
+
+
+async def entrypoint(ctx: JobContext):
+    logger.info("Starting entrypoint...")
+    ctx.log_context_fields = {"room": ctx.room.name}
+
+    vad_instance = ctx.proc.userdata.get("vad")
+
+    session = AgentSession(
+        llm=openai.LLM(model="gpt-4o-mini"),
+        stt=deepgram.STT(model="nova-3", language="multi"),
+        tts=cartesia.TTS(voice=os.environ.get("CARTESIA_TTS_VOICE_ID") or "c99d36f3-5ffd-4253-803a-535c1bc9c306"),
+        vad=ctx.proc.userdata.get("vad"),
+    )
+    logger.info("Session created")
+
+    if vad_instance is None:
+    async def lazy_vad_load():
+        loop = asyncio.get_running_loop()
+        vad = await loop.run_in_executor(None, silero.VAD.load)
+        ctx.proc.userdata["vad"] = vad
+        logger.info("Lazy-loaded VAD")
+    asyncio.create_task(lazy_vad_load())
+
+
+
+
+    usage_collector = metrics.UsageCollector()
+
+    @session.on("metrics_collected")
+    def _on_metrics_collected(ev: MetricsCollectedEvent):
+        metrics.log_metrics(ev.metrics)
+        usage_collector.collect(ev.metrics)
+
+    async def log_usage():
+        summary = usage_collector.get_summary()
+        logger.info(f"Usage: {summary}")
+
+    ctx.add_shutdown_callback(log_usage)
+
+    await session.start(
+        agent=Assistant(),
+        room=ctx.room,
+        room_input_options=RoomInputOptions(),
+        room_output_options=RoomOutputOptions(transcription_enabled=True),
+    )
+    logger.info("Session started")
+
+    await ctx.connect()
+    logger.info("Connected to room")
+
+
+if __name__ == "__main__":
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
+
+
+
+--
+
+
+
+from __future__ import annotations
+
+import os
+import pickle
+from pathlib import Path
+from typing import List, Dict, Optional
+
+from dotenv import load_dotenv
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+# faiss import (faiss-cpu or faiss). If faiss not available, raise an informative error.
+try:
+    import faiss
+except Exception as e:
+    raise ImportError(
+        "faiss is required for the local vector store. Install with `pip install faiss-cpu` "
+        "or `pip install faiss` (if appropriate)."
+    ) from e
+
+# make sure env from repo root is loaded so any future keys are available
+ROOT = Path(__file__).resolve().parent
+load_dotenv(ROOT.parent / ".env.local")
+DATA_DIR = ROOT / "data"
+PERSIST_DIR = ROOT / "query_engine_storage"
+PERSIST_DIR.mkdir(parents=True, exist_ok=True)
+
+INDEX_PATH = PERSIST_DIR / "index.faiss"
+META_PATH = PERSIST_DIR / "metadata.pkl"
+
+ALLOWED_EXTS = {".txt", ".md", ".py", ".json", ".csv"}
+
+
+class QueryEngine:
+    def __init__(self, data_dir: Path = DATA_DIR, persist_dir: Path = PERSIST_DIR, model_name: str = "all-MiniLM-L6-v2"):
+        self.data_dir = Path(data_dir)
+        self.persist_dir = Path(persist_dir)
+        self.model_name = model_name
+        self.model = SentenceTransformer(model_name)
+        self.index: Optional[faiss.Index] = None
+        self.metadatas: List[Dict] = []
+        self.dim: Optional[int] = None
+
+        # load or build index
+        if INDEX_PATH.exists() and META_PATH.exists():
+            try:
+                self._load()
+            except Exception:
+                # fallback to build if load fails
+                self.build()
+        else:
+            self.build()
+
+    def _gather_documents(self) -> List[Dict]:
+        docs: List[Dict] = []
+        if not self.data_dir.exists():
+            return docs
+
+        for path in sorted(self.data_dir.rglob("*")):
+            if path.is_file() and path.suffix.lower() in ALLOWED_EXTS:
+                try:
+                    text = path.read_text(encoding="utf-8")
+                except Exception:
+                    # skip unreadable files
+                    continue
+                docs.append({
+                    "id": str(path.relative_to(self.data_dir)),
+                    "text": text,
+                    "source": str(path),
+                })
+        return docs
+
+    def build(self):
+        docs = self._gather_documents()
+        if len(docs) == 0:
+            # create an empty index placeholder (do not crash on no-docs)
+            self.index = None
+            self.metadatas = []
+            return
+
+        texts = [d["text"] for d in docs]
+        embeddings = self.model.encode(texts, show_progress_bar=True, convert_to_numpy=True)
+
+        # normalize to unit vectors for cosine-sim via inner product
+        faiss.normalize_L2(embeddings)
+        self.dim = embeddings.shape[1]
+
+        # IndexFlatIP for cosine-sim (with normalized vectors)
+        index = faiss.IndexFlatIP(self.dim)
+        index.add(embeddings)
+
+        # persist
+        faiss.write_index(index, str(INDEX_PATH))
+        with open(META_PATH, "wb") as f:
+            pickle.dump(docs, f)
+
+        self.index = index
+        self.metadatas = docs
+
+    def _load(self):
+        idx = faiss.read_index(str(INDEX_PATH))
+        with open(META_PATH, "rb") as f:
+            metas = pickle.load(f)
+
+        self.index = idx
+        self.metadatas = metas
+        # infer dim
+        self.dim = idx.d if hasattr(idx, "d") else (metas and len(self.model.encode([metas[0]["text"]], convert_to_numpy=True)[0]))
+
+    def search(self, query: str, top_k: int = 5) -> List[Dict]:
+        """Return list of hits: {id, score, source, text_snippet}
+        If index is not built (no docs), returns [].
+        """
+        if self.index is None or len(self.metadatas) == 0:
+            return []
+
+        q_emb = self.model.encode([query], convert_to_numpy=True)
+        faiss.normalize_L2(q_emb)
+
+        D, I = self.index.search(q_emb, top_k)
+        hits = []
+        for score, idx in zip(D[0], I[0]):
+            if idx < 0 or idx >= len(self.metadatas):
+                continue
+            meta = self.metadatas[idx]
+            snippet = meta["text"][:500].replace("\n", " ")
+            hits.append({
+                "id": meta["id"],
+                "score": float(score),
+                "source": meta.get("source"),
+                "text": snippet,
+            })
+        return hits
+
+
+# module-level engine instance (import-time initialization)
+try:
+    engine = QueryEngine()
+except Exception:
+    # make a safe fallback so importing doesn't crash the whole app
+    engine = None
+
+
+def search_documents(query: str, top_k: int = 5) -> List[Dict]:
+    """Convenience wrapper used by agent (function-tool).
+    Returns [] if no engine or no docs.
+    """
+    if engine is None:
+        return []
+    return engine.search(query, top_k=top_k)
+
+
+
+
+
+OG Query Engine 
+---------------
+## src/query\_engine.py
+
+from pathlib import Path
+from dotenv import load_dotenv
+import logging
+
+# Load environment variables from the project root
+THIS_DIR = Path(__file__).parent
+PROJECT_ROOT = THIS_DIR.parent
+load_dotenv(PROJECT_ROOT / ".env.local")
+
+# llama-index imports
+from llama_index.core import (
+    StorageContext,
+    VectorStoreIndex,
+    load_index_from_storage,
+    SimpleDirectoryReader,
+)
+
+# LiveKit function decorator (so the agent can register the tool)
+from livekit.agents.llm import function_tool
+
+logger = logging.getLogger("query_engine")
+
+PERSIST_DIR = THIS_DIR / "query-engine-storage"
+DOCS_DIR = THIS_DIR / "data"
+
+# Build or load the index once at import time
+try:
+    if not PERSIST_DIR.exists():
+        logger.info("No existing LlamaIndex storage found; building index from %s", DOCS_DIR)
+        documents = SimpleDirectoryReader(str(DOCS_DIR)).load_data()
+        index = VectorStoreIndex.from_documents(documents)
+        index.storage_context.persist(persist_dir=str(PERSIST_DIR))
+        logger.info("Index built and persisted to %s", PERSIST_DIR)
+    else:
+        logger.info("Loading existing LlamaIndex from %s", PERSIST_DIR)
+        storage_context = StorageContext.from_defaults(persist_dir=str(PERSIST_DIR))
+        index = load_index_from_storage(storage_context)
+        logger.info("Index loaded")
+except Exception:2
+    logger.exception("Failed to build/load LlamaIndex; index variable may be undefined")
+    index = None
+
+
+@function_tool(name="query_info", description="Query the LlamaIndex-backed vector store. Args: query (str)")
+async def query_info(query: str) -> str:
+    """Run an async query against the index and return a text result.
+
+    Returns a short string that the assistant will include in replies.
+    """
+    if index is None:
+        logger.warning("query_info called but index is not initialized")
+        return "(no index available)"
+
+    try:
+        query_engine = index.as_query_engine(use_async=True)
+        res = await query_engine.aquery(query)
+        logger.info("Query executed: %s", query)
+        # Convert response object to compact string for assistant
+        text_res = str(res)
+        # Optionally truncate to a safe length
+        if len(text_res) > 5000:
+            text_res = text_res[:5000] + "..."
+        return text_res
+    except Exception:
+        logger.exception("Error while running query_info")
+        return "(error: failed to query index)"
+
+
+async def search_documents(query: str, top_k: int = 5):
+    """Search documents using the vector index.
+    
+    Args:
+        query: The search query
+        top_k: Number of top results to return
+        
+    Returns:
+        List of document results
+    """
+    if index is None:
+        logger.warning("search_documents called but index is not initialized")
+        return []
+    
+    try:
+        query_engine = index.as_query_engine(similarity_top_k=top_k, use_async=True)
+        response = await query_engine.aquery(query)
+        
+        # Extract source documents from response
+        results = []
+        if hasattr(response, 'source_nodes') and response.source_nodes:
+            for node in response.source_nodes:
+                results.append({
+                    'content': node.text,
+                    'metadata': node.metadata if hasattr(node, 'metadata') else {},
+                    'score': getattr(node, 'score', None)
+                })
+        
+        logger.info("search_documents returned %d results for query: %s", len(results), query)
+        return results
+    except Exception as e:
+        logger.exception("Error in search_documents: %s", str(e))
+        return []
+
+
+------------
+OG Agent107
+
+import logging
+import os
+import asyncio
+
+# top of file, before any HF/llama/transformer imports
+# prevent tokenizers deadlocks after fork
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+# limit openmp threads so child init is lighter
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+# load env early so OPENAI_API_KEY is available to subsequent imports
+
+from dotenv import load_dotenv
+# load env
+load_dotenv(".env.local")
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env.local"))
+
+
+import traceback
+
+# LiveKit agent imports
+from livekit.agents import (  w3e
+    Agent,
+    AgentSession,
+    JobContext,
+    JobProcess,
+    RoomInputOptions,
+    RoomOutputOptions,
+    WorkerOptions,
+    cli,
+    metrics,
+)
+from livekit.agents.llm import function_tool
+from livekit.agents.voice import MetricsCollectedEvent
+from livekit.plugins import cartesia, deepgram, openai, silero
+
+from src.query_engine import search_documents
+
+logger = logging.getLogger("agent")
+logging.basicConfig(level=logging.INFO)
+
+
+
+# Global note: search_documents uses a local FAISS+SentenceTransformer engine
+
+class Assistant(Agent):
+    def __init__(self) -> None:
+        instructions = (
+            "Your name is Alfred, you will greet users with \"what's up B, it's Alfred — what are we working on today?\" "
+            "You are a witty voice AI assistant for a tech-savvy crowd. Leverage both the LLM's baked-in knowledge and local-indexed document "
+            "insights from files in src/data to deliver concise, accurate answers. Add a humorous twist when possible. Focus on software, "
+            "hardware, and coding queries. Avoid uncommon or unsafe topics unless the user provides the password 'alfred'.\n\n"
+            "IMPORTANT TOOL RULE: When a user asks to search documents, inspect files, or retrieve content (e.g., 'search the database', "
+            "'tell me what's in test.txt', 'find the word alfred in my docs'), CALL THE TOOL named 'search_documents' with the user's "
+            "query as the first argument and a sensible top_k (default 5). Then use the tool's returned documents to compose your final answer. "
+            "Do not say you can't access files when the request is a document search—call the tool and incorporate results"
+        )
+        super().__init__(instructions=instructions)
+
+    # function tool for LLM function-calling -> delegates to local query engine
+    @function_tool(name="search_documents", description="Search documents from the local index. Args: query (str), top_k (int=5)")
+    async def search_documents_tool(self, query: str, top_k: int = 5):
+        logger.info("=== search_documents_tool FUNCTION CALLED ===")
+        logger.info("search_documents called with query=%r top_k=%d", query, top_k)
+        try:
+            logger.info("Calling search_documents function...")
+            results = await search_documents(query=query, top_k=top_k)
+            logger.info("search_documents returned %d hits", len(results) if results else 0)
+            logger.info("Results: %s", str(results)[:200] + "..." if len(str(results)) > 200 else str(results))
+            return results
+        except Exception as e:
+            logger.exception("search_documents error: %s", str(e))
+            return []
+
+
+def prewarm(proc: JobProcess):
+    # Attempt quick non-fatal prewarm; if fails, we'll lazy-load later
+    try:
+        # try a fast attempt; put in try so any exception doesn't block init
+        proc.userdata["vad"] = None
+        # spawn a background load so process initialization won't block
+        async def _load_vad_bg():
+            try:
+                loop = asyncio.get_running_loop()
+                vad = await loop.run_in_executor(None, silero.VAD.load)
+                proc.userdata["vad"] = vad
+                logger.info("VAD loaded in background")
+            except Exception as e:
+                logger.exception("VAD background load failed: %s", str(e))
+        
+        # Create task but don't await it - it will run in background
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                loop.create_task(_load_vad_bg())
+            else:
+                # If no loop is running, we'll lazy-load later
+                pass
+        except RuntimeError:
+            # No event loop, will lazy-load later
+            pass
+        logger.info("VAD background load scheduled")
+    except Exception:
+        logger.exception("VAD prewarm scheduling failed; will lazy-load at first use")
+        proc.userdata["vad"] = None
+
+
+async def entrypoint(ctx: JobContext):
+    logger.info("Starting entrypoint...")
+    ctx.log_context_fields = {"room": ctx.room.name}
+
+    vad_instance = ctx.proc.userdata.get("vad")
+
+    session = AgentSession(
+        llm=openai.LLM(model="gpt-4o-mini"),
+        stt=deepgram.STT(model="nova-3", language="multi"),
+        tts=cartesia.TTS(voice=os.environ.get("CARTESIA_TTS_VOICE_ID") or "c99d36f3-5ffd-4253-803a-535c1bc9c306"),
+        vad=ctx.proc.userdata.get("vad"),
+    )
+    logger.info("Session created")
+
+    if vad_instance is None:
+        async def lazy_vad_load():
+            try:
+                loop = asyncio.get_running_loop()
+                vad = await loop.run_in_executor(None, silero.VAD.load)
+                ctx.proc.userdata["vad"] = vad
+                logger.info("Lazy-loaded VAD")
+            except Exception as e:
+                logger.exception("Lazy VAD load failed: %s", str(e))
+        
+        # Create task properly
+        try:
+            asyncio.create_task(lazy_vad_load())
+        except RuntimeError:
+            # If no event loop is running, we'll skip VAD loading
+            logger.warning("No event loop available for VAD loading")
+
+
+
+    usage_collector = metrics.UsageCollector()
+
+    @session.on("metrics_collected")
+    def _on_metrics_collected(ev: MetricsCollectedEvent):
+        metrics.log_metrics(ev.metrics)
+        usage_collector.collect(ev.metrics)
+
+    async def log_usage():
+        summary = usage_collector.get_summary()
+        logger.info(f"Usage: {summary}")
+
+    ctx.add_shutdown_callback(log_usage)
+
+    await session.start(
+        agent=Assistant(),
+        room=ctx.room,
+        room_input_options=RoomInputOptions(),
+        room_output_options=RoomOutputOptions(transcription_enabled=True),
+    )
+    logger.info("Session started")
+
+    await ctx.connect()
+    logger.info("Connected to room")
+
+
+if __name__ == "__main__":
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
+
+
+
+

@@ -1,0 +1,94 @@
+INFO:livekit.agents:starting worker
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+{"message": "starting worker", "level": "INFO", "name": "livekit.agents", "version": "1.2.3", "rtc-version": "1.0.12", "timestamp": "2025-08-23T22:43:33.673997+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 15719, "timestamp": "2025-08-23T22:43:33.730287+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 15720, "timestamp": "2025-08-23T22:43:33.730554+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 15721, "timestamp": "2025-08-23T22:43:33.730641+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 15722, "timestamp": "2025-08-23T22:43:33.730726+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 15725, "timestamp": "2025-08-23T22:43:33.731349+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 15723, "timestamp": "2025-08-23T22:43:33.732912+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 15726, "timestamp": "2025-08-23T22:43:33.733051+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 15724, "timestamp": "2025-08-23T22:43:33.733159+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 15722, "timestamp": "2025-08-23T22:43:35.803685+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 15722, "elapsed_time": 2.07, "timestamp": "2025-08-23T22:43:35.806212+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 15723, "elapsed_time": 2.12, "timestamp": "2025-08-23T22:43:35.854042+00:00"}
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 15723, "timestamp": "2025-08-23T22:43:35.853201+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 15725, "timestamp": "2025-08-23T22:43:35.885139+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 15725, "elapsed_time": 2.15, "timestamp": "2025-08-23T22:43:35.885946+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 15724, "timestamp": "2025-08-23T22:43:35.893905+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 15724, "elapsed_time": 2.16, "timestamp": "2025-08-23T22:43:35.894808+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 15721, "timestamp": "2025-08-23T22:43:35.903455+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 15721, "elapsed_time": 2.17, "timestamp": "2025-08-23T22:43:35.904232+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 15726, "timestamp": "2025-08-23T22:43:35.906597+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 15726, "elapsed_time": 2.17, "timestamp": "2025-08-23T22:43:35.906997+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 15720, "timestamp": "2025-08-23T22:43:35.933452+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 15720, "elapsed_time": 2.2, "timestamp": "2025-08-23T22:43:35.933790+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 15719, "timestamp": "2025-08-23T22:43:35.943964+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 15719, "elapsed_time": 2.21, "timestamp": "2025-08-23T22:43:35.944327+00:00"}
+INFO:livekit.agents:registered worker
+{"message": "registered worker", "level": "INFO", "name": "livekit.agents", "id": "AW_aFHUAGWk8iKP", "url": "wss://aia-107-l49fzc5r.livekit.cloud", "region": "US East B", "protocol": 16, "timestamp": "2025-08-23T22:43:36.061419+00:00"}
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.

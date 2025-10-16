@@ -1,0 +1,92 @@
+                                                   LOGIC
+
+Back-End 
+--------------------
+* Agent Logic 
+* Live Kit Agents Assistant Framework. 
+* SST TTS Logic / Pipeline
+* LLM 
+* Database
+* Dependencies 
+
+* RAG
+* Centralized Query Handler
+
+
+
+Front-End
+--------------------
+* Next JS App
+* Next Route Framework  
+* Node Package Manager 
+* Livekit-server-sdk 
+* Global CSS
+
+
+UI Components 
+--------------------
+* UI kit/Style
+* Chat / Text Fields
+* Audio Visualizer (reposonsive animation)
+   - Amp/Surface Distortion globe audio visualizer
+   - Wave Distortion globe audio visualizer
+* File Upload 
+
+
+
+Development Process 
+--------------------
+
+1. Assitant Logic ✅
+2. STT TTS Pipeline✅
+3. Next JS Front-end Starter UI✅
+4. Route | Backend - Frontend Link✅
+5. Assistant Features - myTask✔️ | myCalender✔️ | myNews | myNotes | myWorkload Tracker | myResearch | myBudget |
+
+
+4. Database Set-Up➖ Generral DocumentsDocuments✅, Vector DB - FAISS, Backend Cloud DB, 
+5. RAG✅
+7. CQRS - Query Handler, QueryContext✅
+8. Fine Tuning - PEFT(Lora), Instructions ✔️
+    - T.O.T (Query Focus Track Tool)
+
+
+9. Agents & Automation - AgentMail | Webby Leads AGT | What Is This AGT (TQ & VQ) | B Programming Sidekick AGT | ➖
+
+10. Next JS Front-end Custom UI
+
+11. Testing ➖ 
+12. Hosting & Deploy ➖22
+
+
+KeyWords Library
+----------------
+
+* RTC
+* STT  
+* TSS  
+* Server-Side Rendering 
+* Agent Logic
+* STT TSS Pipieline 
+* Qeury handler 
+* Query Context
+* Audio Visualizer 
+* Media Track 
+* Silero - VAD
+
+* Vector Database
+
+* Fine Tunning (FT)
+* Full Fine Tunning 
+* PEFT 
+* Lora (low rank adaptation)
+* Curated Dataset 
+
+* Automation 
+* Agents
+* Agentic AI
+* Automate Workflow 
+
+
+
+

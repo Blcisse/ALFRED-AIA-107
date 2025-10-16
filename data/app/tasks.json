@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "text": "Test Task 1",
+    "completed": false,
+    "note": "Test",
+    "importance": "medium"
+  },
+  {
+    "id": 2,
+    "text": "buy milk",
+    "completed": false,
+    "importance": "high",
+    "note": ""
+  },
+  {
+    "id": 3,
+    "text": "Go To Gym",
+    "completed": false,
+    "importance": "medium",
+    "note": ""
+  }
+]

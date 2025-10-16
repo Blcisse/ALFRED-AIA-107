@@ -1,0 +1,158 @@
+INFO:livekit.agents:starting worker
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+{"message": "starting worker", "level": "INFO", "name": "livekit.agents", "version": "1.2.3", "rtc-version": "1.0.12", "timestamp": "2025-08-23T22:39:59.379458+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 13040, "timestamp": "2025-08-23T22:39:59.449220+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 13041, "timestamp": "2025-08-23T22:39:59.451914+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 13042, "timestamp": "2025-08-23T22:39:59.457603+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 13044, "timestamp": "2025-08-23T22:39:59.458316+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 13043, "timestamp": "2025-08-23T22:39:59.458530+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 13045, "timestamp": "2025-08-23T22:39:59.458850+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 13046, "timestamp": "2025-08-23T22:39:59.459034+00:00"}
+INFO:livekit.agents:initializing process
+{"message": "initializing process", "level": "INFO", "name": "livekit.agents", "pid": 13047, "timestamp": "2025-08-23T22:39:59.462464+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 13040, "timestamp": "2025-08-23T22:40:01.729935+00:00"}
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+{"message": "Task was destroyed but it is pending!\ntask: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>", "level": "ERROR", "name": "asyncio", "pid": 13040, "timestamp": "2025-08-23T22:40:01.745129+00:00"}
+/Users/b.cisse/.pyenv/versions/3.11.9/lib/python3.11/asyncio/base_events.py:679: RuntimeWarning: coroutine 'prewarm.<locals>._load_vad_bg' was never awaited
+  self._ready.clear()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 13040, "elapsed_time": 2.3, "timestamp": "2025-08-23T22:40:01.754662+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 13044, "timestamp": "2025-08-23T22:40:01.773078+00:00"}
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+/Users/b.cisse/.pyenv/versions/3.11.9/lib/python3.11/asyncio/base_events.py:679: RuntimeWarning: coroutine 'prewarm.<locals>._load_vad_bg' was never awaited
+  self._ready.clear()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+{"message": "Task was destroyed but it is pending!\ntask: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>", "level": "ERROR", "name": "asyncio", "pid": 13044, "timestamp": "2025-08-23T22:40:01.774107+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 13044, "elapsed_time": 2.32, "timestamp": "2025-08-23T22:40:01.775276+00:00"}
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 13045, "timestamp": "2025-08-23T22:40:01.792381+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 13045, "elapsed_time": 2.33, "timestamp": "2025-08-23T22:40:01.793231+00:00"}
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+{"message": "Task was destroyed but it is pending!\ntask: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>", "level": "ERROR", "name": "asyncio", "pid": 13045, "timestamp": "2025-08-23T22:40:01.793559+00:00"}
+/Users/b.cisse/.pyenv/versions/3.11.9/lib/python3.11/asyncio/base_events.py:679: RuntimeWarning: coroutine 'prewarm.<locals>._load_vad_bg' was never awaited
+  self._ready.clear()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 13041, "timestamp": "2025-08-23T22:40:01.821369+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 13041, "elapsed_time": 2.37, "timestamp": "2025-08-23T22:40:01.822108+00:00"}
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+{"message": "Task was destroyed but it is pending!\ntask: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>", "level": "ERROR", "name": "asyncio", "pid": 13041, "timestamp": "2025-08-23T22:40:01.822187+00:00"}
+/Users/b.cisse/.pyenv/versions/3.11.9/lib/python3.11/asyncio/base_events.py:679: RuntimeWarning: coroutine 'prewarm.<locals>._load_vad_bg' was never awaited
+  self._ready.clear()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 13043, "elapsed_time": 2.37, "timestamp": "2025-08-23T22:40:01.833260+00:00"}
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 13043, "timestamp": "2025-08-23T22:40:01.832861+00:00"}
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+{"message": "Task was destroyed but it is pending!\ntask: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>", "level": "ERROR", "name": "asyncio", "pid": 13043, "timestamp": "2025-08-23T22:40:01.833753+00:00"}
+/Users/b.cisse/.pyenv/versions/3.11.9/lib/python3.11/asyncio/base_events.py:679: RuntimeWarning: coroutine 'prewarm.<locals>._load_vad_bg' was never awaited
+  self._ready.clear()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 13046, "timestamp": "2025-08-23T22:40:01.840428+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 13046, "elapsed_time": 2.38, "timestamp": "2025-08-23T22:40:01.841092+00:00"}
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+{"message": "Task was destroyed but it is pending!\ntask: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>", "level": "ERROR", "name": "asyncio", "pid": 13046, "timestamp": "2025-08-23T22:40:01.841264+00:00"}
+/Users/b.cisse/.pyenv/versions/3.11.9/lib/python3.11/asyncio/base_events.py:679: RuntimeWarning: coroutine 'prewarm.<locals>._load_vad_bg' was never awaited
+  self._ready.clear()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 13042, "timestamp": "2025-08-23T22:40:01.849331+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 13042, "elapsed_time": 2.39, "timestamp": "2025-08-23T22:40:01.849765+00:00"}
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+{"message": "Task was destroyed but it is pending!\ntask: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>", "level": "ERROR", "name": "asyncio", "pid": 13042, "timestamp": "2025-08-23T22:40:01.850054+00:00"}
+/Users/b.cisse/.pyenv/versions/3.11.9/lib/python3.11/asyncio/base_events.py:679: RuntimeWarning: coroutine 'prewarm.<locals>._load_vad_bg' was never awaited
+  self._ready.clear()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+DEBUG:asyncio:Using selector: KqueueSelector
+INFO:agent:VAD background load scheduled
+{"message": "VAD background load scheduled", "level": "INFO", "name": "agent", "pid": 13047, "timestamp": "2025-08-23T22:40:01.874095+00:00"}
+INFO:livekit.agents:process initialized
+{"message": "process initialized", "level": "INFO", "name": "livekit.agents", "pid": 13047, "elapsed_time": 2.41, "timestamp": "2025-08-23T22:40:01.874466+00:00"}
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+/Users/b.cisse/.pyenv/versions/3.11.9/lib/python3.11/asyncio/base_events.py:679: RuntimeWarning: coroutine 'prewarm.<locals>._load_vad_bg' was never awaited
+  self._ready.clear()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+ERROR:asyncio:Task was destroyed but it is pending!
+task: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>
+{"message": "Task was destroyed but it is pending!\ntask: <Task pending name='Task-1' coro=<prewarm.<locals>._load_vad_bg() running at /Users/b.cisse/Downloads/alfred-aia-107/src/agent107.py:82>>", "level": "ERROR", "name": "asyncio", "pid": 13047, "timestamp": "2025-08-23T22:40:01.874574+00:00"}
+INFO:livekit.agents:registered worker
+{"message": "registered worker", "level": "INFO", "name": "livekit.agents", "id": "AW_zUUUt3rVVq9f", "url": "wss://aia-107-l49fzc5r.livekit.cloud", "region": "US East B", "protocol": 16, "timestamp": "2025-08-23T22:40:02.009039+00:00"}
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/docstore.json.
+Loading llama_index.core.storage.kvstore.simple_kvstore from /Users/b.cisse/Downloads/alfred-aia-107/src/query-engine-storage/index_store.json.
