@@ -495,7 +495,7 @@ class Assistant(Agent):
 
 
     @function_tool(
-        name="myblog.refresh",
+        name="myblog_refresh",
         description=(
             "Refresh myBlog by fetching articles per genre and ingesting them into the Next.js API. "
             "Args: genres (list[str]), limit (int=25). Returns {ok, count}."
@@ -529,7 +529,7 @@ def handle_tool_call(name: str, arguments: Dict[str, Any]) -> str:
   
 
 def handle_tool_call(name: str, arguments: Dict[str, Any]) -> str:
-    if name == "myblog.refresh":
+    if name == "myblog_refresh":
         # arguments: {"genres": [...], "limit": 25}
         return json.dumps({"called": "myblog.refresh", "args": arguments})
     # keep existing branches...
@@ -930,21 +930,8 @@ if HTTP_ENABLED:
 # Main
 # =============================================================================
 if __name__ == "__main__":
-    if HTTP_ENABLED:
-        import uvicorn
-        host = os.getenv("AGENT_HOST", "0.0.0.0")
-        port = int(os.getenv("AGENT_PORT", "8000"))
-        reload_flag = os.getenv("AGENT_DEBUG", "1") in ("1", "true", "True")
-        logger.info("Starting Agent107 HTTP server on %s:%s", host, port)
-        uvicorn.run(
-            "src.agent107:app" if "src" in str(Path(__file__).resolve().parent) else "agent107:app",
-            host=host,
-            port=port,
-            reload=reload_flag,
-        )
-    else:
-        try:
-            cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
-        except Exception:
-            logger.exception("Fatal error running LiveKit worker:")
-            traceback.print_exc()
+    try:
+        cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
+    except Exception:
+        logger.exception("Fatal error running LiveKit worker:")
+        traceback.print_exc()

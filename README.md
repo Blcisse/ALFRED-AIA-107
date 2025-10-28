@@ -29,7 +29,6 @@ Tailwind + tw-animate-css setup
 globals.css defines full light/dark CSS variables
 Smooth gradients, shimmer text, and float-up animations
 
-
 🧰 Tech Stack
 Category	Stack
 Framework	Next.js 14 (App Router)
