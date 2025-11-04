@@ -40,6 +40,6 @@ Icons	@phosphor-icons/react
 Notifications	sonner toast
 State Mgmt	React Context (QueryProvider)
 
-🧑‍💻 Developed by Balla Cisse
+🧑‍💻 Developed by Balla Cisse (B)
 Modern AI and 3D Web Applications for the 21st Century
 © 2025 All Rights Reserved.
