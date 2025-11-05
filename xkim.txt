@@ -1,0 +1,8 @@
+
+
+
+* Query Efficiency 
+    - Fragment complex/ heavy load queries for sharper more accurate output 
+
+    
+        - i.e : upload quiz question by set 3 of three rather than entire quiz 

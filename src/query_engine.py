@@ -23,6 +23,7 @@ from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 
 import requests
 from bs4 import BeautifulSoup  # pip install beautifulsoup4
+from chromadb import PersistentClient
 
 # Optional: if you don't want to add a dep, we also parse XML with stdlib
 import xml.etree.ElementTree as ET
@@ -43,8 +44,13 @@ logging.basicConfig(level=logging.INFO)
 # =============================================================================
 
 ROOT = pathlib.Path(__file__).resolve().parent
+STORAGE_DIR = ROOT.parent / "storage" / "query_engine_store"
+STORAGE_DIR.mkdir(parents=True, exist_ok=True)
 VAR_DIR = ROOT.parent / "var"
 VAR_DIR.mkdir(parents=True, exist_ok=True)
+
+client = PersistentClient(path=str(STORAGE_DIR))
+collection = client.get_or_create_collection("aia107_documents")
 
 TASKS_FILE = VAR_DIR / "tasks.json"
 EVENTS_FILE = VAR_DIR / "events.json"
@@ -268,18 +274,46 @@ def get_note_by_title_and_folder_id(title: str, folder_id: int) -> Dict[str, Any
 
 
 # =============================================================================
-# Lightweight RAG stubs (extend later with LlamaIndex/FAISS)
+# Lightweight RAG over ChromaDB collection
 # =============================================================================
 
 def run_rag_query(query: str, top_k: int = 5) -> Dict[str, Any]:
     """
-    Placeholder RAG hook. Replace with your real index pipeline.
+    Query the local ChromaDB collection and return top_k sources with scores.
     """
-    return {"query": query, "sources": []}
+    try:
+        t0 = time.perf_counter()
+        log.info("[RAG] run_rag_query start query=%r top_k=%d", query, top_k)
+        res = collection.query(query_texts=[query], n_results=max(1, int(top_k)))
+        docs = (res.get("documents") or [[]])[0]
+        metas = (res.get("metadatas") or [[]])[0]
+        ids = (res.get("ids") or [[]])[0]
+        dists = (res.get("distances") or [[]])[0]
+        sources: List[Dict[str, Any]] = []
+        for i, text in enumerate(docs):
+            sources.append({
+                "id": ids[i] if i < len(ids) else None,
+                "text": text,
+                "metadata": metas[i] if i < len(metas) else {},
+                "score": (1.0 - float(dists[i])) if i < len(dists) and dists[i] is not None else None,
+            })
+        out = {"query": query, "sources": sources[: max(1, int(top_k))]}
+        elapsed_ms = (time.perf_counter() - t0) * 1000.0
+        log.info("[RAG] run_rag_query end results=%d elapsed_ms=%.1f", len(out["sources"]), elapsed_ms)
+        return out
+    except Exception as e:
+        log.exception("run_rag_query error: %s", e)
+        return {"query": query, "sources": []}
 
 async def search_documents(query: str, top_k: int = 5):
-    # If you add an async retriever, wire it here.
-    return run_rag_query(query, top_k=top_k).get("sources", [])[:top_k]
+    # Simple async wrapper
+    try:
+        log.info("[RAG] search_documents async wrapper query=%r top_k=%d", query, top_k)
+        sources = run_rag_query(query, top_k=top_k).get("sources", [])[: max(1, int(top_k))]
+        log.info("[RAG] search_documents async wrapper results=%d", len(sources))
+        return sources
+    except Exception:
+        return []
 
 
 # =============================================================================

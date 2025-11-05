@@ -4,11 +4,6 @@
 # src/agent107.py
 # Version 1.0.7
 
-
-
-
-
-
 import logging
 import os
 import asyncio
@@ -18,11 +13,6 @@ import os, json, requests
 from typing import Optional, Dict, Any, List
 
 
-
-
-
-
-# ---- env/threading guards ----------------------------------------------------
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 os.environ.setdefault("MKL_NUM_THREADS", "1")
@@ -33,7 +23,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env.local"))
 
 import traceback
 
-# ---- LiveKit imports (original) ---------------------------------------------
+
 from livekit.agents import (
     Agent,
     AgentSession,
@@ -49,18 +39,19 @@ from livekit.agents.llm import function_tool
 from livekit.agents.voice import MetricsCollectedEvent
 from livekit.plugins import cartesia, deepgram, openai, silero
 
-# ---- Query engine import (flexible) -----------------------------------------
+
 try:
-    from src import query_engine as query_engine  # package mode
+    from src import query_engine as query_engine  
 except Exception:
-    import query_engine  # fallback
+    import query_engine  
 
 
 MYBLOG_INGEST_URL = os.getenv("MYBLOG_INGEST_URL", "http://localhost:3000/api/myblog/ingest")
 MYBLOG_INGEST_TOKEN = os.getenv("MYBLOG_INGEST_TOKEN", "")
-# Import managers directly for tool wrappers
+
+
 try:
-    from .query_engine import (  # type: ignore
+    from .query_engine import (  
         add_task,
         list_tasks,
         delete_task,
@@ -86,7 +77,7 @@ try:
    
 except Exception:
     try:
-        from query_engine import (  # type: ignore
+        from query_engine import (  
             add_task,
             list_tasks,
             delete_task,
@@ -112,26 +103,23 @@ except Exception:
 
         )
     except Exception:
-        add_task = list_tasks = delete_task = mark_task_complete = None  # type: ignore
-        add_event = list_events = delete_event = None  # type: ignore
-        add_folder = list_folders = delete_folder = rename_folder = None  # type: ignore
-        add_note = list_notes = delete_note = rename_note = update_note_content = get_note = get_note_by_title = get_note_by_content = get_note_by_folder_id = get_note_by_title_and_content = get_note_by_title_and_folder_id = None  # type: ignore
+        add_task = list_tasks = delete_task = mark_task_complete = None  
+        add_event = list_events = delete_event = None 
+        add_folder = list_folders = delete_folder = rename_folder = None 
+        add_note = list_notes = delete_note = rename_note = update_note_content = get_note = get_note_by_title = get_note_by_content = get_note_by_folder_id = get_note_by_title_and_content = get_note_by_title_and_folder_id = None  
 
 
-# async search helper (if present)
 search_documents = getattr(query_engine, "search_documents", None)
 
 logger = logging.getLogger("agent")
 logging.basicConfig(level=logging.INFO)
 
 
-# =============================================================================
-# Assistant
-# =============================================================================
+# B Cisse Alfred AIA Basic Version 1.0.7  
 class Assistant(Agent):
     def __init__(self) -> None:
-        # Strong, explicit tool-first guidance with examples
         instructions = (
+            # B CISSE FinE Tuning Instructions (Basic Version 1.0.7)
             "Your name is Alfred. Greet with: \"what's up B, it's Alfred.\"\n"
             "\n"
             "You are a hybrid assistant with two responsibilities:\n"
@@ -181,27 +169,36 @@ class Assistant(Agent):
         )
         super().__init__(instructions=instructions)
 
-    # ----------------------------- RAG TOOL -----------------------------------
+   
+    # B Cisse Custom Query Engine RAG TOOL (Basic Version 1.0.7)
+
     @function_tool(
         name="search_documents",
         description="Search documents from the local index. Args: query (str), top_k (int=5). Returns a list of hits or sources."
     )
     async def search_documents_tool(self, query: str, top_k: int = 5):
-        logger.info("=== search_documents_tool called === query=%r top_k=%d", query, top_k)
+        import time as _time
+        _t0 = _time.perf_counter()
+        logger.info("[RAG] search_documents_tool start query=%r top_k=%d", query, top_k)
         try:
             if search_documents is None:
-                # Fallback: run run_rag_query in a thread and adapt to expected list format
+                # Fallback
                 logger.warning("search_documents helper not available; falling back to run_rag_query")
                 run_res = await asyncio.get_event_loop().run_in_executor(None, query_engine.run_rag_query, query)
                 sources = run_res.get("sources", []) if isinstance(run_res, dict) else []
+                _elapsed = (_time.perf_counter() - _t0) * 1000.0
+                logger.info("[RAG] search_documents_tool end results=%d elapsed_ms=%.1f (fallback)", len(sources[:top_k]), _elapsed)
                 return sources[:top_k]
             results = await search_documents(query=query, top_k=top_k)
+            _elapsed = (_time.perf_counter() - _t0) * 1000.0
+            logger.info("[RAG] search_documents_tool end results=%d elapsed_ms=%.1f", len(results or []), _elapsed)
             return results or []
         except Exception as e:
             logger.exception("search_documents_tool error: %s", e)
             return []
 
-    # --------------------------- TASKS TOOLS ----------------------------------
+    # B Cisse TASKS TOOLS
+
     @function_tool(
         name="list_tasks",
         description="List all tasks from persistent storage. No args."
@@ -258,7 +255,10 @@ class Assistant(Agent):
             logger.exception("delete_task_tool error: %s", e)
             return {"deleted": False, "error": str(e)}
 
-    # -------------------------- CALENDAR TOOLS --------------------------------
+
+
+
+      # B Cisse CALENDAR TOOLS 
     @function_tool(
         name="list_events",
         description="List all calendar events from persistent storage. No args."
@@ -300,7 +300,7 @@ class Assistant(Agent):
             return {"deleted": False, "error": str(e)}
 
 
-    # -------------------------- FOLDERS TOOLS --------------------------------
+    # B Cisse FOLDERS TOOLS 
     @function_tool(
         name="list_folders",
         description="List all folders from persistent storage. No args."
@@ -356,7 +356,7 @@ class Assistant(Agent):
             return {"error": str(e)}
 
 
-    # -------------------------- NOTES TOOLS --------------------------------
+    # B Cisse NOTES TOOLS 
     @function_tool(
         name="list_notes",
         description="List all notes from persistent storage. No args."
@@ -492,8 +492,7 @@ class Assistant(Agent):
             return {"error": str(e)} 
     
   
-
-
+    # B Cisse MYBLOG TOOLS 
     @function_tool(
         name="myblog_refresh",
         description=(
@@ -503,7 +502,6 @@ class Assistant(Agent):
     )
     async def myblog_refresh_tool(self, genres: list[str], limit: int = 25):
         try:
-            # Offload blocking I/O to thread
             loop = asyncio.get_event_loop()
             result = await loop.run_in_executor(
                 None,
@@ -518,26 +516,16 @@ class Assistant(Agent):
             return {"ok": False, "error": str(e)}
 
 
-
-  
-
-      
 def handle_tool_call(name: str, arguments: Dict[str, Any]) -> str:
     logger.info(f"[TOOL CALL] {name} invoked with args: {arguments}")
-    # keep your original dispatcher logic here
-    return json.dumps({"ok": True})  # replace with your existing return
-  
+    return json.dumps({"ok": True}) 
 
 def handle_tool_call(name: str, arguments: Dict[str, Any]) -> str:
     if name == "myblog_refresh":
-        # arguments: {"genres": [...], "limit": 25}
         return json.dumps({"called": "myblog.refresh", "args": arguments})
-    # keep existing branches...
     return json.dumps({"ok": True})
 
-# =============================================================================
-# Worker lifecycle (original)
-# =============================================================================
+# B Cisse Worker lifecycle 
 def prewarm(proc: JobProcess):
     try:
         proc.userdata["vad"] = None
@@ -570,6 +558,12 @@ async def entrypoint(ctx: JobContext):
 
     vad_instance = ctx.proc.userdata.get("vad")
 
+
+    if not os.environ.get("DEEPGRAM_API_KEY"):
+        logger.warning("[Voice] DEEPGRAM_API_KEY not set; speech-to-text will not function.")
+    else:
+        logger.info("[Voice] Deepgram configured (key present), model=nova-3, language=multi")
+    # B Cisse Session Setup / STT / TTS / VAD Pipeline
     session = AgentSession(
         llm=openai.LLM(model="gpt-4o-mini"),
         stt=deepgram.STT(model="nova-3", language="multi"),
@@ -617,9 +611,7 @@ async def entrypoint(ctx: JobContext):
     logger.info("Connected to room")
 
 
-# =============================================================================
-# Optional FastAPI surface (AGENT_HTTP=1 to enable)
-# =============================================================================
+
 HTTP_ENABLED = os.getenv("AGENT_HTTP", "0") in ("1", "true", "True")
 
 if HTTP_ENABLED:
@@ -628,9 +620,9 @@ if HTTP_ENABLED:
     from fastapi.middleware.cors import CORSMiddleware
 
     try:
-        from src import query_engine as http_query_engine  # type: ignore
+        from src import query_engine as http_query_engine  
     except Exception:
-        import query_engine as http_query_engine  # type: ignore
+        import query_engine as http_query_engine  
 
     app = FastAPI(title="Agent107 HTTP (query)")
 
@@ -700,7 +692,6 @@ if HTTP_ENABLED:
             logger.exception("Audio processing error: %s", e)
             raise HTTPException(status_code=500, detail=str(e))
 
-    # ---- Optional convenience REST for tasks/events (dev/debug) --------------
     @app.get("/tasks")
     async def get_tasks():
         try:
@@ -924,11 +915,7 @@ if HTTP_ENABLED:
             raise HTTPException(status_code=500, detail=str(e))
 
     
-    
 
-# =============================================================================
-# Main
-# =============================================================================
 if __name__ == "__main__":
     try:
         cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
