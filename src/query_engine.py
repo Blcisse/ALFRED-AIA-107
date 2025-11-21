@@ -22,26 +22,22 @@ from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 
 import requests
-from bs4 import BeautifulSoup  # pip install beautifulsoup4
+from bs4 import BeautifulSoup 
 from chromadb import PersistentClient
 
-# Optional: if you don't want to add a dep, we also parse XML with stdlib
+
 import xml.etree.ElementTree as ET
 
-# Optional OpenAI summarization for nicer snippets
-# pip install openai (>=1.0)
+
 try:
-    from openai import OpenAI  # type: ignore
-except Exception:  # pragma: no cover
-    OpenAI = None  # type: ignore
+    from openai import OpenAI 
+except Exception:  
+    OpenAI = None  
 
 log = logging.getLogger("query_engine")
 logging.basicConfig(level=logging.INFO)
 
 
-# =============================================================================
-# Paths & persistence
-# =============================================================================
 
 ROOT = pathlib.Path(__file__).resolve().parent
 STORAGE_DIR = ROOT.parent / "storage" / "query_engine_store"
@@ -76,9 +72,7 @@ def _next_id(items: List[Dict[str, Any]]) -> int:
     return (max((it.get("id", 0) for it in items), default=0) or 0) + 1
 
 
-# =============================================================================
-# TASKS
-# =============================================================================
+# B Cisse TASKS TOOLS (Basic Version 1.0.7)
 
 def list_tasks() -> List[Dict[str, Any]]:
     data = _read_json(TASKS_FILE, [])
@@ -131,9 +125,7 @@ def delete_task(task_id: Optional[int] = None, text: Optional[str] = None) -> bo
     return len(tasks) < before
 
 
-# =============================================================================
-# EVENTS
-# =============================================================================
+# B Cisse CALENDAR TOOLS (Basic Version 1.0.7)
 
 def list_events() -> List[Dict[str, Any]]:
     return _read_json(EVENTS_FILE, [])
@@ -160,9 +152,7 @@ def delete_event(event_id: int) -> bool:
     return len(events) < before
 
 
-# =============================================================================
-# FOLDERS & NOTES
-# =============================================================================
+# B Cisse FOLDERS TOOLS (Basic Version 1.0.7)
 
 def list_folders() -> List[Dict[str, Any]]:
     return _read_json(FOLDERS_FILE, [])
@@ -273,9 +263,7 @@ def get_note_by_title_and_folder_id(title: str, folder_id: int) -> Dict[str, Any
                  and n.get("folder_id") == folder_id), {})
 
 
-# =============================================================================
-# Lightweight RAG over ChromaDB collection
-# =============================================================================
+# B Cisse Custom Query Engine RAG TOOL (Basic Version 1.0.7)
 
 def run_rag_query(query: str, top_k: int = 5) -> Dict[str, Any]:
     """
@@ -306,7 +294,7 @@ def run_rag_query(query: str, top_k: int = 5) -> Dict[str, Any]:
         return {"query": query, "sources": []}
 
 async def search_documents(query: str, top_k: int = 5):
-    # Simple async wrapper
+   
     try:
         log.info("[RAG] search_documents async wrapper query=%r top_k=%d", query, top_k)
         sources = run_rag_query(query, top_k=top_k).get("sources", [])[: max(1, int(top_k))]
@@ -316,9 +304,10 @@ async def search_documents(query: str, top_k: int = 5):
         return []
 
 
-# =============================================================================
-# myBlog helpers: fetch → enrich → summarize → score → ingest
-# =============================================================================
+
+
+
+# B Cisse MYBLOG TOOLS (Basic Version 1.0.7)
 
 DEFAULT_INGEST_URL = os.getenv("MYBLOG_INGEST_URL") or "http://localhost:3000/api/myblog/ingest"
 DEFAULT_INGEST_TOKEN = os.getenv("MYBLOG_INGEST_TOKEN") or ""
@@ -329,16 +318,16 @@ UA = (
     "Chrome/126.0 Safari/537.36"
 )
 
-# Some reasonable default RSS queries (no paid API needed)
+
 GOOGLE_NEWS_RSS = "https://news.google.com/rss/search?q={query}&hl=en-US&gl=US&ceid=US:en"
 
-DEFAULT_TIMEOUT = (6, 12)  # connect, read
+DEFAULT_TIMEOUT = (6, 12) 
 
 
 def normalize_url(u: str) -> str:
     try:
         parsed = urlparse(u)
-        # strip tracking params
+       
         qs = [(k, v) for k, v in parse_qsl(parsed.query) if not k.lower().startswith("utm_")]
         parsed = parsed._replace(query=urlencode(qs, doseq=True), fragment="")
         return urlunparse(parsed)
@@ -415,10 +404,8 @@ def source_name_from_url(u: str) -> Optional[str]:
     d = domain_of(u)
     if not d:
         return None
-    # strip common prefixes
     d = re.sub(r"^www\.", "", d)
     parts = d.split(".")
-    # Take the registrable portion if possible (simple heuristic)
     if len(parts) >= 2:
         return parts[-2].upper() if parts[-1] in ("com", "net", "org", "io", "ai") else parts[-1].upper()
     return d.upper()
@@ -458,7 +445,7 @@ def openai_summarize(title: str, raw: str, max_words: int = 60) -> Tuple[Optiona
             messages=[{"role": "user", "content": prompt}],
             temperature=0.4,
         )
-        content = resp.choices[0].message.content  # type: ignore
+        content = resp.choices[0].message.content  
         data = json.loads(content) if content else {}
         sub = (data.get("subtitle") or "").strip() or None
         snip = (data.get("snippet") or "").strip() or None
@@ -474,14 +461,12 @@ def recency_score(published_at_iso: Optional[str]) -> float:
     try:
         ts = dt.datetime.fromisoformat(published_at_iso.replace("Z", "+00:00")).timestamp()
         age_h = max(1.0, (time.time() - ts) / 3600.0)
-        # newer is better; within 24h gets strong boost
         return 1.0 / math.log10(age_h + 10.0)
     except Exception:
         return 0.5
 
 
 DOMAIN_WEIGHTS = {
-    # A light authority prior (tune freely)
     "espn.com": 1.2,
     "nba.com": 1.1,
     "theverge.com": 1.1,
@@ -499,7 +484,6 @@ def authority_weight(u: str) -> float:
 
 
 def best_guess_published_at(pub_date_str: str) -> Optional[str]:
-    # Try RFC822 (common in RSS)
     try:
         from email.utils import parsedate_to_datetime
         dtv = parsedate_to_datetime(pub_date_str)
@@ -542,7 +526,6 @@ def collect_articles_for_genre(genre: str, per_genre_limit: int = 8) -> List[Dic
     later you can specialize per-genre feeds.
     """
     q = genre
-    # Specialize a few common ones to be more precise
     if genre.strip().lower() == "nba":
         q = "NBA basketball"
     elif genre.strip().lower() == "tech company ipo":
@@ -558,7 +541,6 @@ def collect_articles_for_genre(genre: str, per_genre_limit: int = 8) -> List[Dic
             articles.append(art)
         except Exception as e:
             log.debug("build_article_from_item failed: %s", e)
-    # Keep the top few by score
     articles.sort(key=lambda a: (-(a.get("score") or 0), a.get("publishedAt") or ""), reverse=False)
     return articles[:per_genre_limit]
 
@@ -586,7 +568,6 @@ def refresh_myblog(
 
     for g in genres:
         candidates = collect_articles_for_genre(g, per_genre_limit=per_genre_candidates)
-        # Safety de-dupe by URL
         seen = set()
         deduped = []
         for c in candidates:
@@ -595,15 +576,10 @@ def refresh_myblog(
                 continue
             seen.add(key)
             deduped.append(c)
-
-        # take 2 "feature cards"
         top_cards = deduped[:per_genre_cards]
         all_articles.extend(top_cards)
 
-    # Fill remaining slots by walking genres in order again, adding more titles
-    # from their remaining candidates until we reach the global limit.
     if len(all_articles) < limit:
-        # Build a map genre -> remaining candidates
         per_genre_map: Dict[str, List[Dict[str, Any]]] = {}
         for g in genres:
             per_genre_map[g] = collect_articles_for_genre(g, per_genre_limit=per_genre_candidates)[per_genre_cards:]
@@ -617,10 +593,9 @@ def refresh_myblog(
                 per_genre_map[g] = bucket
             idx += 1
 
-    # Cap to limit
     all_articles = all_articles[: max(5, min(50, limit))]
 
-    # POST to ingest
+
     headers = {"Authorization": f"Bearer {ingest_token}"} if ingest_token else {}
     try:
         resp = requests.post(

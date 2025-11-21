@@ -1,5 +1,4 @@
 ## GBIPC Glossary
-## Unified Course Guide (Expanded Edition — RAG Ready)
 
 **Metadata:**  
 - **Source:** GBIPCGuide.txt (User upload).  
