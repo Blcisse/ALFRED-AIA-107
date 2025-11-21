@@ -1,7 +1,103 @@
-livekit-agents~=1.0 
-livekit-plugins-deepgram~=1.0 
-livekit-plugins-openai~=1.0 
-livekit-plugins-cartesia~=1.0 
-livekit-plugins-turn-detector~=1.0 
-python-dotenv~=1.0
-llama-index>=0.9.0
+#  Core Web Framework 
+fastapi==0.116.1
+uvicorn==0.38.0
+starlette==0.47.3
+
+#  LiveKit Realtime Voice/Video Stack 
+livekit==1.0.12
+livekit-agents==1.2.3
+livekit-api==1.0.5
+livekit-protocol==1.0.4
+livekit-plugins-openai==1.2.2
+livekit-plugins-silero==1.2.2
+livekit-plugins-cartesia==1.2.2
+livekit-plugins-deepgram==1.2.2
+livekit-plugins-turn-detector==1.2.3
+av==15.0.0
+
+#  LLMs / Embeddings / RAG / LlamaIndex 
+openai==1.100.2
+deepgram-sdk==3.1.0
+transformers==4.54.1
+tokenizers==0.21.4
+tiktoken==0.11.0
+sentence-transformers==5.0.0
+chromadb==1.3.0
+faiss-cpu==1.12.0
+
+llama-index==0.13.2
+llama-index-core==0.13.2
+llama-index-workflows==1.3.0
+llama-index-cli==0.5.0
+llama-index-readers-file==0.5.2
+llama-index-readers-llama-parse==0.5.0
+llama-index-llms-openai==0.5.4
+llama-cloud==0.1.35
+llama-cloud-services==0.6.54
+llama-parse==0.6.54
+
+
+langchain==0.3.0
+langchain-community==0.3.0
+langgraph==0.1.0   
+
+
+
+#  Torch Ecosystem (V2 Additions) 
+torch==2.7.1
+torchvision   # version resolves automatically for torch==2.7.1
+torchaudio    # version resolves automatically for torch==2.7.1
+torchtext     # version resolves automatically for torch==2.7.1
+
+#  ML / Optimization / Math 
+onnxruntime==1.22.1
+scikit-learn==1.7.1
+scipy==1.16.1
+numpy==2.3.2
+safetensors==0.5.3
+
+#  NLP / Text / Document Handling 
+nltk==3.9.1
+regex==2025.7.34
+unstructured==0.18.13
+unstructured-client==0.42.3
+pypdf==6.0.0
+striprtf==0.0.26
+
+#  Computer Vision / Images 
+pillow==11.3.0
+
+#  Audio 
+sounddevice==0.5.2
+
+#  Database / Cache / Queue 
+redis==7.0.1
+SQLAlchemy==2.0.43
+asyncpg==0.30.0
+
+#  Cloud / Storage 
+boto3==1.41.1
+google-cloud-storage==3.6.0
+
+#  Data / Utils / Parsing 
+pandas==2.2.3
+pydantic==2.11.7
+orjson==3.11.4
+requests==2.32.4
+websockets==15.0.1
+python-dotenv==1.1.1
+rich==14.2.0
+tabulate==0.9.0
+tqdm==4.67.1
+
+
+#  LLM / Agent / Workflow Tools 
+langchain==0.3.0
+langchain-community==0.3.0
+langgraph==0.1.0   
+
+
+#  Security / Compliance (Disney role alignment) 
+python-multipart==0.0.20    
+pyjwt==2.10.1                
+cryptography==45.0.6
