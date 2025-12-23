@@ -1,15 +1,20 @@
 🌐Alfred AIA 
+
 Multimodal Agentic AI Assistant & Intelligent Automation Platform
 Overview
+
 Alfred AI is a production-grade, multimodal AI assistant designed to function as an intelligent digital workspace rather than a single-purpose chatbot. The platform combines LLM reasoning, Retrieval-Augmented Generation (RAG), multimodal inputs, and agentic workflows to support complex, real-world tasks such as software development assistance, project organization, automated scheduling, and contextual decision support.
 Built end-to-end as a solo project, Alfred AI demonstrates how modern AI systems can be engineered as reliable, extensible platforms, integrating voice, text, vision, and structured data into a unified reasoning and automation layer.
+
 Key Objectives
 Build a real-world agentic AI system, not a demo or prompt wrapper
 Demonstrate LLM orchestration, tool use, and reasoning pipelines
 Enable automation of cognitive and operational workflows
 Showcase multimodal AI engineering (voice, text, vision, context)
 Reflect enterprise-grade software and AI engineering standards
+
 Core Capabilities
+
 1. Agentic AI Workflows
 Multi-step reasoning and task execution using agent-based patterns
 Dynamic tool selection and execution (APIs, services, internal functions)
@@ -29,8 +34,10 @@ Intelligent coding support with semantic code analysis
 Reason-based debugging assistance
 Contextual knowledge retrieval via RAG pipelines
 Personalized daily insights and summaries
+
 Technical Architecture
 High-Level System Flow
+
 [ User Input (Voice / Text / Image) ]
               ↓
       [ Multimodal Preprocessing ]
@@ -44,6 +51,7 @@ High-Level System Flow
    [ Structured Responses & Actions ]
               ↓
      [ UI / Voice / Automation ]
+   
 Technology Stack
 Backend & AI
 Python
